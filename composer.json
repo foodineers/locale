@@ -73,10 +73,7 @@
         "laravel": {
             "providers": [
                 "Foodineers\\Locale\\LocaleServiceProvider"
-            ],
-            "aliases": {
-                "Locale": "Foodineers\\Locale\\Facades\\Locale"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
