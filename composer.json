@@ -2,6 +2,7 @@
     "name": "foodineers/locale",
     "description": "Laravel Package for handling multicountry and multilanguage websites",
     "type": "library",
+    "license": "MIT",
     "keywords": [
         "Foodineers",
         "laravel",
@@ -22,7 +23,6 @@
     },
     "require-dev": {
         "foodineers/laravel-devtools": "dev-main",
-        "matthewbdaly/artisan-standalone": "*",
         "orchestra/testbench": "*"
     },
     "autoload": {
