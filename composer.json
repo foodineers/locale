@@ -1,0 +1,82 @@
+{
+    "name": ":vendor_slug/:package_slug",
+    "description": ":package_description",
+    "type": "library",
+    "keywords": [
+        ":vendor_name",
+        "laravel",
+        ":package_slug"
+    ],
+    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "authors": [
+        {
+            "name": ":author_name",
+            "email": "author@domain.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "spatie/laravel-package-tools": "^1.16",
+        "illuminate/contracts": "^11.0||^12.0||^13.0"
+    },
+    "require-dev": {
+        "foodieneers/laravel-devtools": "dev-main",
+        "matthewbdaly/artisan-standalone": "*",
+        "nunomaduro/mock-final-classes": "^1.2",
+        "orchestra/testbench": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "VendorName\\Skeleton\\": "src/",
+            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Workbench\\App\\": "workbench/app/"
+        }
+    },
+    "scripts": {
+
+    "dep:bump": "composer bump",
+    "lint": [
+        "rector",
+        "pint --parallel"
+    ],
+    "test:type-coverage": "pest --type-coverage --min=100",
+    "test:lint": [
+        "pint --parallel --test",
+        "rector --dry-run"
+    ],
+    "pest": "pest",
+    "test:unit": "pest --parallel --coverage --exactly=100.0",
+    "test:types": "phpstan --memory-limit=4G",
+     "test": [
+        "@test:type-coverage",
+        "@test:unit",
+        "@test:lint",
+        "@test:types"
+    ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VendorName\\Skeleton\\SkeletonServiceProvider"
+            ],
+            "aliases": {
+                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
