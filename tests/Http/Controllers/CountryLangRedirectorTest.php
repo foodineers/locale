@@ -9,11 +9,21 @@ beforeEach(function () {
     Route::get('/test', CountryLangRedirector::class);
 });
 
-it('redirects using country then language', function (array $config, string $locale, array $headers, string $target) {
+it('redirects using country then language', function (array $config, string $locale, array $headers, string $target, array $cookies = []) {
     config($config);
     app()->setLocale($locale);
 
-    $this->withHeaders($headers)->get('/test')->assertRedirect($target);
+    $response = $this->withHeaders($headers)->withUnencryptedCookies($cookies)->get('/test')->assertRedirect($target);
+
+    [$lang, $country] = array_pad(explode('-', explode('/', mb_trim($target, '/'))[0], 2), 2, null);
+
+    $response->assertPlainCookie('lang', $lang);
+
+    if (count($config['locale.countries']) > 1 && $country !== null) {
+        $response->assertPlainCookie('country', $country);
+    } else {
+        $response->assertCookieMissing('country');
+    }
 })->with([
     'one country' => [
         ['locale.countries' => ['it'], 'locale.langs' => ['en']],
@@ -74,5 +84,47 @@ it('redirects using country then language', function (array $config, string $loc
         'en_CH',
         ['Accept-Language' => 'fr'],
         '/en-it/test',
+    ],
+    'country cookie beats cloudflare' => [
+        ['locale.countries' => ['it', 'de'], 'locale.langs' => ['en']],
+        'en',
+        ['CF-IPCountry' => 'DE'],
+        '/en-it/test',
+        ['country' => 'it'],
+    ],
+    'country cookie not allowed falls through' => [
+        ['locale.countries' => ['it', 'de'], 'locale.langs' => ['en']],
+        'en',
+        ['CF-IPCountry' => 'DE'],
+        '/en-de/test',
+        ['country' => 'fr'],
+    ],
+    'one country ignores cookie' => [
+        ['locale.countries' => ['it'], 'locale.langs' => ['en']],
+        'en',
+        ['CF-IPCountry' => 'DE'],
+        '/en-it/test',
+        ['country' => 'de'],
+    ],
+    'lang cookie beats accept-language' => [
+        ['locale.countries' => ['it'], 'locale.langs' => ['en', 'it']],
+        'en',
+        ['Accept-Language' => 'en'],
+        '/it-it/test',
+        ['lang' => 'it'],
+    ],
+    'lang cookie not allowed falls through' => [
+        ['locale.countries' => ['it'], 'locale.langs' => ['en', 'it']],
+        'en',
+        ['Accept-Language' => 'it'],
+        '/it-it/test',
+        ['lang' => 'fr'],
+    ],
+    'one language ignores cookie' => [
+        ['locale.countries' => ['it'], 'locale.langs' => ['en']],
+        'en',
+        ['Accept-Language' => 'it'],
+        '/en-it/test',
+        ['lang' => 'it'],
     ],
 ]);

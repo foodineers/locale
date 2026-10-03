@@ -19,9 +19,13 @@ final class CountryLangRedirector
         if (count($countries) === 1) {
             $country = $countries[0];
         } elseif (count($countries) > 1) {
-            $header = $request->header('CF-IPCountry');
-            $code = is_string($header) ? mb_strtolower($header) : '';
-            $country = in_array($code, $countries, true) ? $code : null;
+            foreach ([$request->cookie('country'), $request->header('CF-IPCountry')] as $raw) {
+                $code = is_string($raw) ? mb_strtolower($raw) : '';
+                if (in_array($code, $countries, true)) {
+                    $country = $code;
+                    break;
+                }
+            }
         }
 
         /** @var list<string> $langs */
@@ -32,11 +36,20 @@ final class CountryLangRedirector
         } elseif ($langs === []) {
             $lang = explode('_', app()->getLocale())[0];
         } else {
-            $lang = $request->getPreferredLanguage($langs) ?? $langs[0];
+            $cookie = $request->cookie('lang');
+            $code = is_string($cookie) ? mb_strtolower($cookie) : '';
+            $lang = in_array($code, $langs, true) ? $code : ($request->getPreferredLanguage($langs) ?? $langs[0]);
         }
 
         $prefix = $country === null ? $lang : $lang.'-'.$country;
 
-        return redirect('/'.$prefix.'/'.$request->path());
+        $redirect = redirect('/'.$prefix.'/'.$request->path())
+            ->withCookie(cookie()->forever('lang', $lang));
+
+        if (count($countries) > 1 && $country !== null) {
+            $redirect->withCookie(cookie()->forever('country', $country));
+        }
+
+        return $redirect;
     }
 }
