@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-use Foodineers\Locale\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
-    Route::middleware(SetLocale::class)->get('/{prefix}/page', fn () => app()->getLocale());
+    Route::middleware('locale')->get('/{prefix}/page', fn () => app()->getLocale());
 });
 
 it('sets locale from allowed cookies or the url prefix', function (array $config, string $appLocale, string $url, int $status, string $locale, array $requestCookies, array $responseCookies) {
