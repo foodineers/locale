@@ -1,58 +1,58 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "foodineers/locale",
+    "description": "Laravel Package for handling multicountry and multilanguage websites",
     "type": "library",
     "keywords": [
-        ":vendor_name",
+        "Foodineers",
         "laravel",
-        ":package_slug"
+        "locale"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/foodineers/locale",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Azzarip",
+            "email": "marco.azzari@foodineers.com",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.4",
+        "php": "^8.5",
         "spatie/laravel-package-tools": "^1.16",
         "illuminate/contracts": "^11.0||^12.0||^13.0"
     },
     "require-dev": {
-        "foodieneers/laravel-devtools": "dev-main",
+        "foodineers/laravel-devtools": "dev-main",
         "matthewbdaly/artisan-standalone": "*",
-        "nunomaduro/mock-final-classes": "^1.2",
         "orchestra/testbench": "*"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Foodineers\\Locale\\": "src/",
+            "Foodineers\\Locale\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Foodineers\\Locale\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
     "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
 
-    "dep:bump": "composer bump",
     "lint": [
-        "rector",
-        "pint --parallel"
+        "rector --ansi",
+        "pint --parallel --ansi"
     ],
     "test:type-coverage": "pest --type-coverage --min=100",
     "test:lint": [
         "pint --parallel --test",
-        "rector --dry-run"
+        "rector --dry-run --ansi"
     ],
-    "pest": "pest",
+    "pest": "pest --profile",
     "test:unit": "pest --parallel --coverage --exactly=100.0",
-    "test:types": "phpstan --memory-limit=4G",
+    "test:types": "phpstan --ansi",
      "test": [
         "@test:type-coverage",
         "@test:unit",
@@ -63,6 +63,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
+            "laravel/vet": true,
+            "llm/skills": true,
             "pestphp/pest-plugin": true,
             "phpstan/extension-installer": true
         }
@@ -70,10 +72,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Foodineers\\Locale\\LocaleServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "Locale": "Foodineers\\Locale\\Facades\\Locale"
             }
         }
     },

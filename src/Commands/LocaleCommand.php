@@ -1,13 +1,18 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+declare(strict_types=1);
+
+namespace Foodineers\Locale\Commands;
 
 use Illuminate\Console\Command;
+use Override;
 
-class SkeletonCommand extends Command
+final class LocaleCommand extends Command
 {
-    public $signature = 'skeleton';
+    #[Override]
+    public $signature = 'locale';
 
+    #[Override]
     public $description = 'My command';
 
     public function handle(): int

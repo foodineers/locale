@@ -1,8 +1,8 @@
 <?php
 
-namespace VendorName\Skeleton\Database\Factories;
+declare(strict_types=1);
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+namespace Foodineers\Locale\Database\Factories;
 
 /*
 class ModelFactory extends Factory
