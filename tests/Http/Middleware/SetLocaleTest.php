@@ -29,7 +29,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
     }
 })->with([
     'url sets cookies and locale' => [
-        ['locale.countries' => ['ch', 'it'], 'locale.langs' => ['fr', 'en']],
+        ['locale.countries' => ['ch', 'it'], 'locale.languages' => ['fr', 'en']],
         'en',
         '/fr-ch/page',
         200,
@@ -38,7 +38,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'fr', 'country' => 'ch'],
     ],
     'country not allowed' => [
-        ['locale.countries' => ['it'], 'locale.langs' => ['fr']],
+        ['locale.countries' => ['it'], 'locale.languages' => ['fr']],
         'en',
         '/fr-ch/page',
         404,
@@ -47,7 +47,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         [],
     ],
     'lang not allowed picks first' => [
-        ['locale.countries' => ['ch'], 'locale.langs' => ['en', 'it']],
+        ['locale.countries' => ['ch'], 'locale.languages' => ['en', 'it']],
         'it',
         '/fr-ch/page',
         200,
@@ -55,8 +55,8 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         [],
         ['lang' => 'en', 'country' => 'ch'],
     ],
-    'no langs uses app locale' => [
-        ['locale.countries' => ['ch'], 'locale.langs' => []],
+    'no languages uses app locale' => [
+        ['locale.countries' => ['ch'], 'locale.languages' => []],
         'de_CH',
         '/fr-ch/page',
         200,
@@ -65,7 +65,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'de', 'country' => 'ch'],
     ],
     'allowed cookies win' => [
-        ['locale.countries' => ['ch', 'it'], 'locale.langs' => ['fr', 'it']],
+        ['locale.countries' => ['ch', 'it'], 'locale.languages' => ['fr', 'it']],
         'en',
         '/fr-ch/page',
         200,
@@ -74,7 +74,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         [],
     ],
     'invalid cookies take url' => [
-        ['locale.countries' => ['ch'], 'locale.langs' => ['fr']],
+        ['locale.countries' => ['ch'], 'locale.languages' => ['fr']],
         'en',
         '/fr-ch/page',
         200,
@@ -83,7 +83,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'fr', 'country' => 'ch'],
     ],
     'lang only url' => [
-        ['locale.countries' => [], 'locale.langs' => ['fr']],
+        ['locale.countries' => [], 'locale.languages' => ['fr']],
         'en',
         '/fr/page',
         200,
@@ -92,7 +92,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'fr'],
     ],
     'missing country is kept' => [
-        ['locale.countries' => ['ch', 'it'], 'locale.langs' => ['fr']],
+        ['locale.countries' => ['ch', 'it'], 'locale.languages' => ['fr']],
         'en',
         '/fr/page',
         200,
@@ -101,7 +101,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'fr'],
     ],
     'uppercase url' => [
-        ['locale.countries' => ['ch'], 'locale.langs' => ['fr']],
+        ['locale.countries' => ['ch'], 'locale.languages' => ['fr']],
         'en',
         '/FR-CH/page',
         200,
@@ -110,7 +110,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['lang' => 'fr', 'country' => 'ch'],
     ],
     'cookie lang kept when url lang not allowed' => [
-        ['locale.countries' => ['ch'], 'locale.langs' => ['en', 'it']],
+        ['locale.countries' => ['ch'], 'locale.languages' => ['en', 'it']],
         'en',
         '/fr-ch/page',
         200,
@@ -119,3 +119,30 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         ['country' => 'ch'],
     ],
 ]);
+
+it('copies session cookie settings onto locale cookies', function () {
+    config([
+        'locale.countries' => ['ch'],
+        'locale.languages' => ['fr'],
+        'session.path' => '/app',
+        'session.domain' => '.example.test',
+        'session.secure' => true,
+        'session.http_only' => false,
+        'session.same_site' => 'strict',
+        'session.partitioned' => true,
+    ]);
+
+    $response = $this->get('/fr-ch/page');
+
+    foreach (['lang', 'country'] as $name) {
+        $cookie = $response->getCookie($name, false);
+
+        expect($cookie)->not->toBeNull()
+            ->and($cookie?->getPath())->toBe('/app')
+            ->and($cookie?->getDomain())->toBe('.example.test')
+            ->and($cookie?->isSecure())->toBeTrue()
+            ->and($cookie?->isHttpOnly())->toBeFalse()
+            ->and($cookie?->getSameSite())->toBe('strict')
+            ->and($cookie?->isPartitioned())->toBeTrue();
+    }
+});

@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Foodineers\Locale\Http\Controllers;
 
+use Foodineers\Locale\LocaleCookie;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-final class CountryLangRedirector
+final class LocaleRedirector
 {
     public function __invoke(Request $request): RedirectResponse
     {
@@ -28,26 +29,26 @@ final class CountryLangRedirector
             }
         }
 
-        /** @var list<string> $langs */
-        $langs = config('locale.langs', []);
+        /** @var list<string> $languages */
+        $languages = config('locale.languages', []);
 
-        if (count($langs) === 1) {
-            $lang = $langs[0];
-        } elseif ($langs === []) {
+        if (count($languages) === 1) {
+            $lang = $languages[0];
+        } elseif ($languages === []) {
             $lang = explode('_', app()->getLocale())[0];
         } else {
             $cookie = $request->cookie('lang');
             $code = is_string($cookie) ? mb_strtolower($cookie) : '';
-            $lang = in_array($code, $langs, true) ? $code : ($request->getPreferredLanguage($langs) ?? $langs[0]);
+            $lang = in_array($code, $languages, true) ? $code : ($request->getPreferredLanguage($languages) ?? $languages[0]);
         }
 
         $prefix = $country === null ? $lang : $lang.'-'.$country;
 
         $redirect = redirect('/'.$prefix.'/'.$request->path())
-            ->withCookie(cookie()->forever('lang', $lang));
+            ->withCookie(LocaleCookie::make('lang', $lang));
 
         if (count($countries) > 1 && $country !== null) {
-            $redirect->withCookie(cookie()->forever('country', $country));
+            $redirect->withCookie(LocaleCookie::make('country', $country));
         }
 
         return $redirect;

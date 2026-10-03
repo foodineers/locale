@@ -7,5 +7,5 @@ return [
     /** Countries that are accepted by the application, ISO2, if only one country is provided, it will be used as default */
     'countries' => ['it'],
 
-    'langs' => ['en', 'it'],
+    'languages' => ['en', 'it'],
 ];

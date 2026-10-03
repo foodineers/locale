@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Foodineers\Locale\Http\Middleware;
 
 use Closure;
+use Foodineers\Locale\LocaleCookie;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,8 +17,8 @@ final class SetLocale
         /** @var list<string> $countries */
         $countries = config('locale.countries', []);
 
-        /** @var list<string> $langs */
-        $langs = config('locale.langs', []);
+        /** @var list<string> $languages */
+        $languages = config('locale.languages', []);
 
         $segment = mb_strtolower(explode('/', $request->path())[0]);
         $parts = explode('-', $segment, 2);
@@ -41,12 +42,12 @@ final class SetLocale
 
         $storedLang = $this->stored($request, 'lang');
 
-        if (in_array($storedLang, $langs, true)) {
+        if (in_array($storedLang, $languages, true)) {
             $lang = $storedLang;
-        } elseif (in_array($urlLang, $langs, true)) {
+        } elseif (in_array($urlLang, $languages, true)) {
             $lang = $urlLang;
         } else {
-            $lang = $langs[0] ?? explode('_', app()->getLocale())[0];
+            $lang = $languages[0] ?? explode('_', app()->getLocale())[0];
         }
 
         if ($storedLang !== $lang) {
@@ -58,7 +59,7 @@ final class SetLocale
         $response = $next($request);
 
         foreach ($cookies as $name => $value) {
-            $response->headers->setCookie(cookie()->forever($name, $value));
+            $response->headers->setCookie(LocaleCookie::make($name, $value));
         }
 
         return $response;
