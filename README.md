@@ -1,60 +1,47 @@
-# Laravel Package for handling multicountry and multilanguage websites
+# Locale
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/foodieneers/locale.svg?style=flat-square)](https://packagist.org/packages/foodieneers/locale)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/foodieneers/locale/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/foodieneers/locale/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/foodieneers/locale/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/foodieneers/locale/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/foodieneers/locale.svg?style=flat-square)](https://packagist.org/packages/foodieneers/locale)
-
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
-
-## Support us
-
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/locale.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/locale)
-
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
-
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+Laravel package for multicountry, multilanguage sites. URLs look like `/en-it/about` or `/en/about`. A `locale` middleware reads that prefix, and `LocaleRedirector` sends unprefixed requests to one.
 
 ## Installation
 
-You can install the package via composer:
-
 ```bash
-composer require foodieneers/locale
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag="locale-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --tag="locale-config"
-```
-
-This is the contents of the published config file:
-
-```php
-return [
-];
-```
-
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="locale-views"
+composer require foodineers/locale
+php artisan vendor:publish --tag=locale-config
 ```
 
 ## Usage
 
+`config/locale.php`:
+
 ```php
-$locale = new Foodineers\Locale();
-echo $locale->echoPhrase('Hello, Foodineers!');
+return [
+    'countries' => ['it'], // ISO 3166-1 alpha-2. One entry is the default country.
+    'languages' => ['en', 'it'],
+];
 ```
+
+Register prefixed routes before the redirector. The redirector appends `/{lang}` or `/{lang}-{country}` to the current path, so it must not match an already-prefixed URL.
+
+```php
+use Foodineers\Locale\Http\Controllers\LocaleRedirector;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('locale')
+    ->prefix('{locale}')
+    ->where(['locale' => '[a-z]{2}(-[a-z]{2})?'])
+    ->group(function () {
+        Route::get('/about', AboutController::class);
+    });
+
+Route::get('/{path?}', LocaleRedirector::class)
+    ->where('path', '^(?![a-z]{2}(-[a-z]{2})?(/|$)).*');
+```
+
+The `locale` middleware alias is registered by the package. `app()->setLocale()` receives the language only.
+
+## Agent skill
+
+Apps that sync skills with [`llm/skills`](https://github.com/roxblnfk/skills) get `foodineers-locale`. The instructions live in [`resources/skills/foodineers-locale/SKILL.md`](resources/skills/foodineers-locale/SKILL.md).
 
 ## Testing
 
@@ -64,21 +51,8 @@ composer test
 
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Azzarip](https://github.com/)
-- [All Contributors](../../contributors)
+See [CHANGELOG](CHANGELOG.md).
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+MIT. See [LICENSE](LICENSE).

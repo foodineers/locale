@@ -74,6 +74,9 @@
             "providers": [
                 "Foodineers\\Locale\\LocaleServiceProvider"
             ]
+        },
+        "skills": {
+            "source": "resources/skills"
         }
     },
     "minimum-stability": "dev",
