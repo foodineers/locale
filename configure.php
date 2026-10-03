@@ -253,8 +253,8 @@ $authorUsername = ask('Author username', guessGitHubUsername());
 
 $guessGitHubVendorInfo = guessGitHubVendorInfo($authorName, $authorUsername);
 
-$vendorName = 'Foodieneers';
-$vendorUsername = 'Foodieneers';
+$vendorName = 'Foodineers';
+$vendorUsername = 'Foodineers';
 $vendorSlug = slugify($vendorUsername);
 
 $vendorNamespace = str_replace('-', '', ucwords($vendorName));
