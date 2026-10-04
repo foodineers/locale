@@ -29,9 +29,7 @@ final class SetLocale
         $cookies = [];
 
         if (is_string($urlCountry)) {
-            if (! in_array($urlCountry, $countries, true)) {
-                abort(404);
-            }
+            abort_unless(in_array($urlCountry, $countries, true), 404);
 
             $storedCountry = $this->stored($request, 'country');
 

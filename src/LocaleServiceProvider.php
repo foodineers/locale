@@ -21,7 +21,7 @@ final class LocaleServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         /** @var Router $router */
-        $router = $this->app->make('router');
+        $router = $this->app->make(Router::class);
 
         $router->aliasMiddleware('locale', SetLocale::class);
     }

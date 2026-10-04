@@ -42,10 +42,10 @@ final class LocaleRedirector
             $lang = in_array($code, $languages, true) ? $code : ($request->getPreferredLanguage($languages) ?? $languages[0]);
         }
 
-        $prefix = $country === null ? $lang : $lang.'-'.$country;
+        $prefix = $country === null ? $lang : $lang . '-' . $country;
         $qs = $request->server->get('QUERY_STRING', '');
 
-        $redirect = redirect('/'.$prefix.'/'.$request->path().($qs === '' ? '' : '?'.$qs))
+        $redirect = redirect('/' . $prefix . '/' . $request->path() . ($qs === '' ? '' : '?' . $qs))
             ->withCookie(LocaleCookie::make('lang', $lang));
 
         if (count($countries) > 1 && $country !== null) {

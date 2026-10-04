@@ -5,7 +5,6 @@ declare(strict_types=1);
 use Pest\Rector\Set\PestSetList;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
-use Rector\TypeDeclaration\Rector\Closure\AddClosureVoidReturnTypeWhereNoReturnRector;
 use Rector\ValueObject\PhpVersion;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -33,16 +32,10 @@ return RectorConfig::configure()
         cacheClass: FileCacheStorage::class,
     )
     ->withPaths([
-        __DIR__.'/src',
-        __DIR__.'/config',
-        __DIR__.'/database',
-        __DIR__.'/resources',
-        __DIR__.'/tests',
-    ])
-    ->withSkip([
-        AddClosureVoidReturnTypeWhereNoReturnRector::class => [
-            __DIR__.'/tests',
-        ],
+        __DIR__ . '/src',
+        __DIR__ . '/config',
+        __DIR__ . '/resources',
+        __DIR__ . '/tests',
     ])
     ->withCodeQualityLevel(50)
     ->withPhpSets();
