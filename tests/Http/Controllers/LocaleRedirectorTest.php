@@ -9,6 +9,12 @@ beforeEach(function () {
     Route::get('/test', LocaleRedirector::class);
 });
 
+it('keeps the query string', function () {
+    config(['locale.countries' => ['it'], 'locale.languages' => ['en']]);
+
+    $this->get('/test?b=2&a=1')->assertRedirect('/en-it/test?b=2&a=1');
+});
+
 it('redirects using country then language', function (array $config, string $locale, array $headers, string $target, array $cookies = []) {
     config($config);
     app()->setLocale($locale);

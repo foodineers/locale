@@ -43,8 +43,9 @@ final class LocaleRedirector
         }
 
         $prefix = $country === null ? $lang : $lang.'-'.$country;
+        $qs = $request->server->get('QUERY_STRING', '');
 
-        $redirect = redirect('/'.$prefix.'/'.$request->path())
+        $redirect = redirect('/'.$prefix.'/'.$request->path().($qs === '' ? '' : '?'.$qs))
             ->withCookie(LocaleCookie::make('lang', $lang));
 
         if (count($countries) > 1 && $country !== null) {

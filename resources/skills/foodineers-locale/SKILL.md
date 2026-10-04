@@ -37,7 +37,7 @@ Route::get('/{path?}', LocaleRedirector::class)
 
 The `where` keeps `/en-it/about` off the redirector. Without it the redirector nests the prefix (`/en-it/en-it/about`). Do not put `locale` middleware on the redirector route.
 
-`/` redirects to `/{prefix}//`. Browsers collapse that to `/{prefix}/`.
+`/` redirects to `/{prefix}//`. Browsers collapse that to `/{prefix}/`. The query string is kept, in the original order.
 
 ## Resolution
 
