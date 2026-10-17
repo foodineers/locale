@@ -64,14 +64,14 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         [],
         ['lang' => 'de', 'country' => 'ch'],
     ],
-    'allowed cookies win' => [
+    'url lang beats allowed cookie' => [
         ['locale.countries' => ['ch', 'it'], 'locale.languages' => ['fr', 'it']],
         'en',
         '/fr-ch/page',
         200,
-        'it',
+        'fr',
         ['lang' => 'it', 'country' => 'it'],
-        [],
+        ['lang' => 'fr'],
     ],
     'invalid cookies take url' => [
         ['locale.countries' => ['ch'], 'locale.languages' => ['fr']],

@@ -40,10 +40,10 @@ final class SetLocale
 
         $storedLang = $this->stored($request, 'lang');
 
-        if (in_array($storedLang, $languages, true)) {
-            $lang = $storedLang;
-        } elseif (in_array($urlLang, $languages, true)) {
+        if (in_array($urlLang, $languages, true)) {
             $lang = $urlLang;
+        } elseif (in_array($storedLang, $languages, true)) {
+            $lang = $storedLang;
         } else {
             $lang = $languages[0] ?? explode('_', app()->getLocale())[0];
         }

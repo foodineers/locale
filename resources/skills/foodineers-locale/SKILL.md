@@ -54,8 +54,8 @@ The redirector always queues a forever `lang` cookie. It queues `country` only w
 `SetLocale` runs on the prefixed request:
 
 - A country in the prefix must be configured, or the response is 404. A prefix with no country is allowed.
-- Language: allowed `lang` cookie, else allowed prefix language, else the first configured language, else the app locale with the region stripped.
-- An allowed `lang` cookie wins over the prefix. Do not redirect inside this middleware to "fix" that.
+- Language: allowed prefix language, else allowed `lang` cookie, else the first configured language, else the app locale with the region stripped.
+- The prefix wins over the `lang` cookie, and the cookie is rewritten to match. The cookie is used only when the prefix language is not allowed.
 - An allowed `country` cookie is left as-is. The URL country is stored only when the cookie is missing or not allowed.
 - `app()->setLocale($lang)` gets the language only, never `lang-country`.
 
