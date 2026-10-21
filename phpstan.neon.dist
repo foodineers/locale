@@ -4,5 +4,5 @@ parameters:
         - src
         - config
         - routes
-    tmpDir: build/phpstan
+    tmpDir: .build/phpstan
     checkOctaneCompatibility: true

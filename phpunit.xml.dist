@@ -12,7 +12,7 @@
     failOnRisky="true"
     failOnEmptyTestSuite="true"
     beStrictAboutOutputDuringTests="true"
-    cacheDirectory=".phpunit.cache"
+    cacheDirectory=".build/phpunit/cache"
     backupStaticProperties="false"
 >
     <testsuites>
@@ -21,7 +21,7 @@
         </testsuite>
     </testsuites>
     <logging>
-        <junit outputFile="build/report.junit.xml"/>
+        <junit outputFile=".build/phpunit/report.junit.xml"/>
     </logging>
     <source>
         <include>
