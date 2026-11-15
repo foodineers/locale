@@ -60,3 +60,5 @@ The redirector always queues a forever `lang` cookie. It queues `country` only w
 - `app()->setLocale($lang)` gets the language only, never `lang-country`.
 
 Cookies `lang` and `country` are forever and copy `session.path`, `session.domain`, `session.secure`, `session.http_only`, `session.same_site`, and `session.partitioned`. Read them with `$request->cookie()`, not `$_COOKIE`.
+
+`country()` returns that cookie as two lowercase letters, or null when it is missing or not two letters.

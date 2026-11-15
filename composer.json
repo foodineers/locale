@@ -26,6 +26,9 @@
         "orchestra/testbench": "*"
     },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "Foodineers\\Locale\\": "src/",
             "Foodineers\\Locale\\Database\\Factories\\": "database/factories/"

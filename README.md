@@ -37,7 +37,7 @@ Route::get('/{path?}', LocaleRedirector::class)
     ->where('path', '^(?![a-z]{2}(-[a-z]{2})?(/|$)).*');
 ```
 
-The `locale` middleware alias is registered by the package. `app()->setLocale()` receives the language only.
+The `locale` middleware alias is registered by the package. `app()->setLocale()` receives the language only. `country()` returns the `country` cookie as two lowercase letters, or null.
 
 ## Agent skill
 
