@@ -1,6 +1,6 @@
 # Locale
 
-Laravel package for multicountry, multilanguage sites. URLs look like `/en-it/about` or `/en/about`. A `locale` middleware reads that prefix, and `LocaleRedirector` sends unprefixed requests to one.
+Laravel package for multicountry, multilanguage sites. URLs look like `/en-it/about` or `/en/about`. `locale.url` reads that prefix, `locale.request` fills a missing cookie from the request, and `locale` sets the app locale. `LocaleRedirector` sends unprefixed requests to one.
 
 ## Installation
 
@@ -26,7 +26,7 @@ Register prefixed routes before the redirector. The redirector appends `/{lang}`
 use Foodineers\Locale\Http\Controllers\LocaleRedirector;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('locale')
+Route::middleware(['locale.url', 'locale.request', 'locale'])
     ->prefix('{locale}')
     ->where(['locale' => '[a-z]{2}(-[a-z]{2})?'])
     ->group(function () {
@@ -37,7 +37,7 @@ Route::get('/{path?}', LocaleRedirector::class)
     ->where('path', '^(?![a-z]{2}(-[a-z]{2})?(/|$)).*');
 ```
 
-The `locale` middleware alias is registered by the package. `app()->setLocale()` receives the language only. `country()` returns the `country` cookie as two lowercase letters, or null.
+`locale` is `SetLocale`. `app()->setLocale()` receives the language only. `country()` returns the `country` cookie as two lowercase letters, or null.
 
 ## Agent skill
 

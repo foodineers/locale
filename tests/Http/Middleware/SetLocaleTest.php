@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 
 beforeEach(function () {
-    Route::middleware('locale')->get('/{prefix}/page', fn () => app()->getLocale());
+    Route::middleware(['locale.url', 'locale.request', 'locale'])->get('/{prefix}/page', fn () => app()->getLocale());
 });
 
 it('sets locale from allowed cookies or the url prefix', function (array $config, string $appLocale, string $url, int $status, string $locale, array $requestCookies, array $responseCookies) {
@@ -71,7 +71,7 @@ it('sets locale from allowed cookies or the url prefix', function (array $config
         200,
         'fr',
         ['lang' => 'it', 'country' => 'it'],
-        ['lang' => 'fr'],
+        ['lang' => 'fr', 'country' => 'ch'],
     ],
     'invalid cookies take url' => [
         ['locale.countries' => ['ch'], 'locale.languages' => ['fr']],
@@ -144,7 +144,42 @@ it('copies session cookie settings onto locale cookies', function () {
             ->and($cookie?->isHttpOnly())->toBeFalse()
             ->and($cookie?->getSameSite())->toBe('strict')
             ->and($cookie?->isPartitioned())->toBeTrue()
-            ->and($cookie?->getMaxAge())->toBeGreaterThan(60 * 60 * 24 * 364)
-            ->and($cookie?->getMaxAge())->toBeLessThanOrEqual(60 * 60 * 24 * 365);
+            ->and($cookie?->getMaxAge())->toBeGreaterThan(31449600)
+            ->and($cookie?->getMaxAge())->toBeLessThanOrEqual(31536000);
     }
+});
+
+it('applies the lang cookie and ignores the url', function () {
+    Route::middleware('locale')->get('/plain', fn () => app()->getLocale());
+
+    config(['locale.languages' => ['en', 'it']]);
+
+    $this->withUnencryptedCookies(['lang' => 'it'])
+        ->get('/plain')
+        ->assertOk()
+        ->assertContent('it')
+        ->assertCookieMissing('lang')
+        ->assertCookieMissing('country');
+});
+
+it('fills a missing language from the request', function () {
+    config(['locale.countries' => ['ch'], 'locale.languages' => ['en', 'it']]);
+
+    $this->withHeaders(['Accept-Language' => 'it'])
+        ->get('/fr-ch/page')
+        ->assertOk()
+        ->assertContent('it')
+        ->assertPlainCookie('lang', 'it')
+        ->assertPlainCookie('country', 'ch');
+});
+
+it('fills a missing country from the request', function () {
+    config(['locale.countries' => ['ch', 'it'], 'locale.languages' => ['fr']]);
+
+    $this->withHeaders(['CF-IPCountry' => 'IT'])
+        ->get('/fr/page')
+        ->assertOk()
+        ->assertContent('fr')
+        ->assertPlainCookie('lang', 'fr')
+        ->assertPlainCookie('country', 'it');
 });

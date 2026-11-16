@@ -4,10 +4,20 @@ declare(strict_types=1);
 
 namespace Foodineers\Locale;
 
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Cookie;
 
 final class LocaleCookie
 {
+    private const int MINUTES = 525600; // one year
+
+    public static function value(Request $request, string $name): string
+    {
+        $value = $request->cookie($name);
+
+        return is_string($value) ? mb_strtolower($value) : '';
+    }
+
     public static function make(string $name, string $value): Cookie
     {
         /** @var string|null $path */
@@ -28,7 +38,7 @@ final class LocaleCookie
         /** @var bool $partitioned */
         $partitioned = config('session.partitioned', false);
 
-        return cookie()->make($name, $value, 60 * 24 * 365, $path, $domain, $secure, $httpOnly, false, $sameSite)
+        return cookie()->make($name, $value, self::MINUTES, $path, $domain, $secure, $httpOnly, false, $sameSite)
             ->withPartitioned($partitioned);
     }
 }
