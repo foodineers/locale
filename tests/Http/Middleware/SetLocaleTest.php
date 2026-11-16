@@ -143,6 +143,8 @@ it('copies session cookie settings onto locale cookies', function () {
             ->and($cookie?->isSecure())->toBeTrue()
             ->and($cookie?->isHttpOnly())->toBeFalse()
             ->and($cookie?->getSameSite())->toBe('strict')
-            ->and($cookie?->isPartitioned())->toBeTrue();
+            ->and($cookie?->isPartitioned())->toBeTrue()
+            ->and($cookie?->getMaxAge())->toBeGreaterThan(60 * 60 * 24 * 364)
+            ->and($cookie?->getMaxAge())->toBeLessThanOrEqual(60 * 60 * 24 * 365);
     }
 });

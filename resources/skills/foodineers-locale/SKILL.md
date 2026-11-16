@@ -49,7 +49,7 @@ The `where` keeps `/en-it/about` off the redirector. Without it the redirector n
 | Several | Cookie `country` if allowed, else `CF-IPCountry` if allowed, else omit it from the prefix. | Cookie `lang` if allowed, else `Accept-Language` via `getPreferredLanguage()`, else the first configured language. |
 | None | Omit it. | `app()->getLocale()` with the region stripped (`de_CH` → `de`). |
 
-The redirector always queues a forever `lang` cookie. It queues `country` only when more than one country is configured and one was chosen.
+The redirector always queues a one-year `lang` cookie. It queues `country` only when more than one country is configured and one was chosen.
 
 `SetLocale` runs on the prefixed request:
 
@@ -59,6 +59,6 @@ The redirector always queues a forever `lang` cookie. It queues `country` only w
 - An allowed `country` cookie is left as-is. The URL country is stored only when the cookie is missing or not allowed.
 - `app()->setLocale($lang)` gets the language only, never `lang-country`.
 
-Cookies `lang` and `country` are forever and copy `session.path`, `session.domain`, `session.secure`, `session.http_only`, `session.same_site`, and `session.partitioned`. Read them with `$request->cookie()`, not `$_COOKIE`.
+Cookies `lang` and `country` last one year and copy `session.path`, `session.domain`, `session.secure`, `session.http_only`, `session.same_site`, and `session.partitioned`. Read them with `$request->cookie()`, not `$_COOKIE`.
 
 `country()` returns that cookie as two lowercase letters, or null when it is missing or not two letters.

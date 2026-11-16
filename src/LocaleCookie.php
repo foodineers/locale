@@ -28,7 +28,7 @@ final class LocaleCookie
         /** @var bool $partitioned */
         $partitioned = config('session.partitioned', false);
 
-        return cookie()->forever($name, $value, $path, $domain, $secure, $httpOnly, false, $sameSite)
+        return cookie()->make($name, $value, 60 * 24 * 365, $path, $domain, $secure, $httpOnly, false, $sameSite)
             ->withPartitioned($partitioned);
     }
 }
